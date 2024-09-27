@@ -29,9 +29,12 @@ authors = ["Aliaksei Bialiauski <aliaksei.bialiauski@hey.com>"]
 
 [lib]
 path = "src/lib.rs"
+proc-macro = true
 
 [dependencies]
 anyhow = "1.0.86"
+quote = "1.0.37"
+syn = { version = "1.0", features = ["full"] }
 log = { version = "0.4.21", features = [] }
 hamcrest = "0.1.5"
 testing_logger = "0.1.1"

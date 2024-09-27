@@ -22,3 +22,36 @@
 /*!
 Rust test tagging.
  */
+use proc_macro::TokenStream;
+use quote::quote;
+use syn::{parse_macro_input, AttributeArgs, ItemFn};
+
+/// Tag.
+#[proc_macro_attribute]
+pub fn tag(attr: TokenStream, item: TokenStream) -> TokenStream {
+    let args = parse_macro_input!(attr as AttributeArgs);
+    let input = parse_macro_input!(item as ItemFn);
+    let tag = if let Some(arg) = args.first() {
+        if let syn::NestedMeta::Lit(syn::Lit::Str(lit)) = arg {
+            lit.value()
+        } else {
+            panic!("Expected a string literal for the tag");
+        }
+    } else {
+        panic!("Expected a tag argument");
+    };
+    let name = &input.sig.ident;
+    let block = &input.block;
+    let gen = quote! {
+        #[test]
+        #[ignore = "This test is ignored because it does not match the current tag filter"]
+        fn #name() -> anyhow::Result<()> {
+            if std::env::var("TTAG").map_or(true, |val| val != #tag) {
+                println!("Test '{}' skipped due to tag mismatch: expected '{}'", stringify!(#name), #tag);
+                return Ok(());
+            }
+            #block
+        }
+    };
+    gen.into()
+}
