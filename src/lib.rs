@@ -42,15 +42,41 @@ pub fn tag(attr: TokenStream, item: TokenStream) -> TokenStream {
     };
     let name = &input.sig.ident;
     let block = &input.block;
-    let gen = quote! {
-        #[test]
-        #[ignore = "This test is ignored because it does not match the current tag filter"]
-        fn #name() -> anyhow::Result<()> {
-            if std::env::var("TTAG").map_or(true, |val| val != #tag) {
-                println!("Test '{}' skipped due to tag mismatch: expected '{}'", stringify!(#name), #tag);
-                return Ok(());
+    let has_test_attr = input.attrs.iter().any(|attr| attr.path.is_ident("test"));
+    let current_tag = std::env::var("TTAG").unwrap_or_else(|_| "<none>".to_string());
+    let ignore_attr = if current_tag != tag {
+        quote! { #[ignore] }
+    } else {
+        quote! {}
+    };
+    println!("Current Tag: {}", tag);
+    println!("Run Tag: {}", current_tag);
+    let gen = if has_test_attr {
+        quote! {
+            #ignore_attr
+            #[test]
+            fn #name() -> anyhow::Result<()> {
+                if #current_tag != #tag {
+                    println!(
+                        "Test '{}' ignored due to tag mismatch: expected '{}', current '{}'",
+                        stringify!(#name), #tag, #current_tag
+                    );
+                }
+                #block
             }
-            #block
+        }
+    } else {
+        quote! {
+            #ignore_attr
+            fn #name() -> anyhow::Result<()> {
+                if #current_tag != #tag {
+                    println!(
+                        "Test '{}' ignored due to tag mismatch: expected '{}', current '{}'",
+                        stringify!(#name), #tag, #current_tag
+                    );
+                }
+                #block
+            }
         }
     };
     gen.into()
