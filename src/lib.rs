@@ -49,8 +49,6 @@ pub fn tag(attr: TokenStream, item: TokenStream) -> TokenStream {
     } else {
         quote! {}
     };
-    println!("Current Tag: {}", tag);
-    println!("Run Tag: {}", current_tag);
     let gen = if has_test_attr {
         quote! {
             #ignore_attr
