@@ -14,7 +14,7 @@
 `tagrs` is a tool for [Rust test] tagging.
 
 **Motivation**. There was no such tool for Rust, that can run tests
-conditionally, based on tags, similarly to JUnit's [@Tag][JUnit Tag]. 
+conditionally, based on tags, similarly to JUnit's [@Tag][JUnit Tag].
 
 ## How to use
 
