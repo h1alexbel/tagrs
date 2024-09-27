@@ -18,7 +18,7 @@ conditionally, based on tags, similarly to JUnit's [@Tag][JUnit Tag].
 
 ## How to use
 
-Here is the example:
+Here is an example:
 
 ```rust
 #[cfg(test)]
