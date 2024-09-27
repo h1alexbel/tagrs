@@ -63,7 +63,7 @@ pub fn tag(attr: TokenStream, item: TokenStream) -> TokenStream {
                 #block
             }
         }
-    } else { 
+    } else {
         panic!("Tag {} should be used with #[test]", tag);
     };
     gen.into()
