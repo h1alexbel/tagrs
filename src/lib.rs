@@ -44,7 +44,7 @@ pub fn tag(attr: TokenStream, item: TokenStream) -> TokenStream {
     let block = &input.block;
     let has_test_attr = input.attrs.iter().any(|attr| attr.path.is_ident("test"));
     let run = std::env::var("TTAG").unwrap_or_else(|_| "<none>".to_string());
-    let ignore_attr = if run != tag {
+    let ignore_attr = if run != tag && run != "<none>" {
         quote! { #[ignore] }
     } else {
         quote! {}
