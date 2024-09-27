@@ -63,19 +63,8 @@ pub fn tag(attr: TokenStream, item: TokenStream) -> TokenStream {
                 #block
             }
         }
-    } else {
-        quote! {
-            #ignore_attr
-            fn #name() -> anyhow::Result<()> {
-                if #run != #tag {
-                    println!(
-                        "Test '{}' ignored due to tag mismatch: expected '{}', run '{}'",
-                        stringify!(#name), #tag, #run
-                    );
-                }
-                #block
-            }
-        }
+    } else { 
+        panic!("Tag {} should be used with #[test]", tag);
     };
     gen.into()
 }
