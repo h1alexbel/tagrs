@@ -43,8 +43,8 @@ pub fn tag(attr: TokenStream, item: TokenStream) -> TokenStream {
     let name = &input.sig.ident;
     let block = &input.block;
     let has_test_attr = input.attrs.iter().any(|attr| attr.path.is_ident("test"));
-    let current_tag = std::env::var("TTAG").unwrap_or_else(|_| "<none>".to_string());
-    let ignore_attr = if current_tag != tag {
+    let run = std::env::var("TTAG").unwrap_or_else(|_| "<none>".to_string());
+    let ignore_attr = if run != tag {
         quote! { #[ignore] }
     } else {
         quote! {}
@@ -54,10 +54,10 @@ pub fn tag(attr: TokenStream, item: TokenStream) -> TokenStream {
             #ignore_attr
             #[test]
             fn #name() -> anyhow::Result<()> {
-                if #current_tag != #tag {
+                if #run != #tag {
                     println!(
-                        "Test '{}' ignored due to tag mismatch: expected '{}', current '{}'",
-                        stringify!(#name), #tag, #current_tag
+                        "Test '{}' ignored due to tag mismatch: expected '{}', run '{}'",
+                        stringify!(#name), #tag, #run
                     );
                 }
                 #block
@@ -67,10 +67,10 @@ pub fn tag(attr: TokenStream, item: TokenStream) -> TokenStream {
         quote! {
             #ignore_attr
             fn #name() -> anyhow::Result<()> {
-                if #current_tag != #tag {
+                if #run != #tag {
                     println!(
-                        "Test '{}' ignored due to tag mismatch: expected '{}', current '{}'",
-                        stringify!(#name), #tag, #current_tag
+                        "Test '{}' ignored due to tag mismatch: expected '{}', run '{}'",
+                        stringify!(#name), #tag, #run
                     );
                 }
                 #block
