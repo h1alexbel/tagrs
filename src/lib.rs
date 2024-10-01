@@ -23,7 +23,6 @@
 Rust test tagging.
  */
 use proc_macro::TokenStream;
-use std::io::BufRead;
 use quote::quote;
 use syn::{parse_macro_input, AttributeArgs, ItemFn};
 
@@ -46,19 +45,16 @@ pub fn tag(attr: TokenStream, item: TokenStream) -> TokenStream {
     let has_test_attr =
         input.attrs.iter().any(|attr| attr.path.is_ident("test"));
     let run = std::env::var("TTAG").unwrap_or_else(|_| "<none>".to_string());
-    let ignore_attr;
-    if run.contains(",") {
-        ignore_attr = if !run.contains(&tag) {
+    let ignore_attr = if run.contains(",") {
+        if !run.contains(&tag) {
             quote! { #[ignore] }
         } else {
             quote! {}
         }
+    } else if run != tag && run != "<none>" && run != "*" {
+        quote! { #[ignore] }
     } else {
-        ignore_attr = if run != tag && run != "<none>" && run != "*" {
-            quote! { #[ignore] }
-        } else {
-            quote! {}
-        };
+        quote! {}
     };
     let gen = if has_test_attr {
         quote! {
