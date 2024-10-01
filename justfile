@@ -49,6 +49,7 @@ check:
 # Rultor merge script.
 rultor:
   cargo --color=never test
+  cd tests && for f in *.sh; do bash "$f"; done
   cargo fmt --check -- --color=never
   cargo machete
   cargo doc --no-deps
