@@ -47,12 +47,12 @@ pub fn tag(attr: TokenStream, item: TokenStream) -> TokenStream {
     let run = std::env::var("TTAG").unwrap_or_else(|_| "<none>".to_string());
     let ignore_attr = if run.contains(",") {
         if !run.contains(&tag) {
-            quote! { #[ignore] }
+            quote! { #[ignore = "Tag mismatch (#[tag] should match if you want to enable this test)"] }
         } else {
             quote! {}
         }
     } else if run != tag && run != "<none>" && run != "*" {
-        quote! { #[ignore] }
+        quote! { #[ignore = "Tag mismatch (#[tag] should match if you want to enable this test)"] }
     } else {
         quote! {}
     };
