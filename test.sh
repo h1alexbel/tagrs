@@ -20,36 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# Install required tools
-install:
-  cargo install cargo-machete
-
-# Full build
-full:
-  cargo clean
-  just build
-
-# Build the project.
-build:
-  just test
-  just check
-  cargo build
-
-# Run tests.
-test:
-  cargo test
-  sh test.sh
-
-# Check the quality of code.
-check:
-  cargo clippy --all-targets --all-features
-  cargo fmt --check
-  cargo machete
-
-# Rultor merge script.
-rultor:
-  cargo --color=never test
-  cargo fmt --check -- --color=never
-  cargo machete
-  cargo doc --no-deps
-  cargo clippy
+# Run all tests.
+cd tests && for f in *.sh; do
+  sh "$f"
+done
