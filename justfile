@@ -38,7 +38,7 @@ build:
 # Run tests.
 test:
   cargo test
-  cd tests && for f in *.sh; do sh "$f"; done
+  cd tests && for f in *.sh; do bash "$f"; done
 
 # Check the quality of code.
 check:
