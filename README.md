@@ -42,16 +42,40 @@ mod tests {
         assert_eq!(2 + 2, 4);
         Ok(())
     }
+
+    #[tag("nightly")]
+    #[test]
+    fn runs_very_slow() -> Result<()> {
+        thread::sleep(Duration::from_mins(2));
+        assert_eq!(4 + 4, 8);
+        Ok(())
+    }
 }
 ```
 
 then run:
 
 ```bash
-TTEST=fast cargo test
+TTAG=fast cargo test
 ```
 
-It should run only `runs_fast` test, while `runs_slow` will be ignored.
+It should run only `runs_fast` test, while `runs_slow`, `runs_very_slow` will
+be ignored.
+
+You can run a group of tags as well. Either with:
+
+```bash
+TTAG=slow,fast cargo test
+```
+
+or with `*`:
+
+```bash
+TTAG=* cargo test
+```
+
+The former will run only tests that have `slow` or `fast` tag, while the latter
+will run all tests.
 
 ## How to contribute?
 
